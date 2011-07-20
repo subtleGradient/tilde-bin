@@ -1,0 +1,9 @@
+#!/usr/bin/env osascript
+-- Refreshes the CSS in every Safari document
+-- Using the bookmarklet found at http://dojotoolkit.org/~david/recss.html
+-- 
+-- Converted to Applescript by Thomas Aylott - http://subtleGradient.com
+
+tell app "Safari"¬
+    to do JavaScript "!function(){        var links = document.getElementsByTagName('link');        for (var i=0, link; link = links[i++];){            if (link.href && String(link.rel).toLowerCase().indexOf('stylesheet') >= 0){                var href = link.href.replace(/[&?]reCSS=\\d+/, '');                link.href = href + (href.indexOf('?') >= 0 ? '&' : '?') + 'reCSS=' + (+new Date);            }        }    }()"¬
+    in every document
