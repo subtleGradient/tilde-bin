@@ -1,0 +1,84 @@
+#!/usr/bin/env bash
+
+if [ $1 == '--help' ];then
+    cat <<EOF
+Verify the syntax of js files
+
+    USAGE:
+
+        $0 path/to/file1.js path/to/file2.js path/to/file3.js etc...
+        $0 path/to/*.js
+        $0 path/to/dir
+        $0 --deep path/to/dir
+        $0 --dry-run path/to/whatever
+EOF
+    exit 1
+fi
+
+
+if [ $1 == '--dry-run' ]; then
+    DRYRUN=1
+    shift
+fi
+if [ $1 == '--combine' ]; then
+    COMBINE=1
+    shift
+fi
+if [ $1 == '--deep' ]; then
+    DEEP=1
+    shift
+fi
+
+
+CMD="/usr/bin/env closure"
+CMD="$CMD --js_output_file /dev/null"
+CMD="$CMD --third_party"
+CMD="$CMD --warning_level VERBOSE"
+# CMD="$CMD --jscomp_off nonStandardJsDocs"
+CMD="$CMD --jscomp_dev_mode EVERY_PASS"
+
+
+
+function parseFiles () {
+    for fileName in $*; do
+        # echo $fileName
+        if [ -d "$fileName" ]; then
+            if [ $DEEP ];then
+                parseFiles $(find "$fileName" -name *.js)
+            else
+                parseFiles "$fileName"/*.js
+            fi
+        else
+            parseFile "$fileName"
+        fi
+    done
+}
+
+JS=""
+
+function parseFile () {
+    if [ $COMBINE ];then
+        JS="--js $1 $JS"
+    else
+        cmd="$CMD --js $1"
+        echo $cmd
+        if [ ! $DRYRUN ];then
+            `$cmd`
+        fi
+    fi
+}
+
+
+parseFiles $*
+
+
+if [ $COMBINE ];then
+    cmd="$CMD $JS"
+    echo $cmd
+    if [ ! $DRYRUN ];then
+        `$cmd`
+    fi
+fi
+
+
+exit $?
