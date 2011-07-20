@@ -1,0 +1,25 @@
+#!/usr/bin/env bash
+# 
+# url         : https://gist.github.com/672684
+# version     : 3.0
+# name        : appify
+# description : Create the simplest possible mac app from a shell script.
+# usage       : appify MyApp my-script.sh
+# platform    : Mac OS X
+# author      : Thomas Aylott <oblivious@subtlegradient.com>
+# license     : MIT
+
+APPNAME="${1:-Untitled}"
+
+if [[ -a "$APPNAME.app" ]]; then
+  echo "App already exists :'(" >&2
+  echo "$PWD/$APPNAME.app"
+  exit 1
+fi
+
+mkdir -p "$APPNAME.app/Contents/MacOS"
+cp "$2"  "$APPNAME.app/Contents/MacOS/$APPNAME"
+touch    "$APPNAME.app/Contents/MacOS/$APPNAME"
+chmod +x "$APPNAME.app/Contents/MacOS/$APPNAME"
+
+echo "$PWD/$APPNAME.app"
