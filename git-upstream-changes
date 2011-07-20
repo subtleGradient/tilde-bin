@@ -1,0 +1,8 @@
+#!/usr/bin/env bash
+git log \
+    --graph\
+    --pretty=format:log --graph --pretty=format:'%Cred%h%Creset - %Cblue%an%Creset%C(yellow)%d%Creset %s %Cgreen(%cr)%Creset'\
+    --abbrev-commit\
+    --date=relative\
+    HEAD..$(git for-each-ref --format='%(upstream:short)' $(git symbolic-ref HEAD))\
+    | cat;echo # get out of (END) mode, whatever it's called. #lolN00b
