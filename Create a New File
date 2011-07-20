@@ -1,0 +1,18 @@
+#!/usr/bin/env osascript
+-- name: Create a New File
+-- description:
+--     Create a new Untitled file in the current Finder window
+--     Intended to be used as an appify app in the Finder toolbar
+--
+-- author: Thomas Aylott <oblivious@subtlegradient.com>
+-- license: MIT
+
+tell the application "Finder"
+    set the_folder to the target of the first window
+    set the_path to the quoted form of POSIX path of (the_folder as alias)
+    do shell script "cd " & the_path & ";touch Untitled"
+    select file "Untitled" of the_folder
+    activate
+    delay 0.25
+    tell the application "System Events" to keystroke (key code 36)
+end tell
