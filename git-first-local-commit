@@ -1,0 +1,7 @@
+#!/usr/bin/env bash
+git log \
+    --pretty=format:log --graph --pretty=format:'%h'\
+    --abbrev-commit\
+    $(git for-each-ref --format='%(upstream:short)' $(git symbolic-ref HEAD))..HEAD\
+    |sed 's/^\* //'\
+    |tail -1
