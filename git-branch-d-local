@@ -1,0 +1,2 @@
+git branch|sed 's!*!!'|xargs -L1 git branch -d 2>/dev/null
+git branch
