@@ -1,0 +1,22 @@
+#!/usr/bin/env bash
+#
+#     license: "MIT"
+#      author: "Thomas Aylott <thomas@mootools.net>"
+#        name: "publish on localhost"
+# description: "symlinks a directory to ~/Sites using its path as the filename"
+
+TARGET_PATH=$1
+
+if [ ! -d "$TARGET_PATH" ]; then
+    echo "$TARGET_PATH is an invalid directory path" 1>&2
+    exit 1
+fi
+
+       USER=$(echo "$HOME"|sed "s!^$(dirname $HOME)!!")
+  LINK_NAME=$(echo "$TARGET_PATH"|sed "s!^$HOME!!"|sed 's!^/!!'|sed 's!/!:!g')
+TARGET_PATH=$(echo "$TARGET_PATH"|sed "s!^$HOME!../!")
+
+pushd "$HOME/Sites"
+ln -s "$TARGET_PATH" "$LINK_NAME" && \
+open "http://localhost/~$USER/$LINK_NAME"
+popd
