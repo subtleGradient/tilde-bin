@@ -1,0 +1,22 @@
+#!/usr/bin/env bash
+# usage: ls *.js | xargs gitx\ many
+
+TMP_FILE="$TMPDIR/git.diff"
+
+if [ -f "$TMP_FILE" ]; then
+    rm "$TMP_FILE"
+fi
+
+shift
+
+for FILE in $*; do
+    echo "$FILE"
+    if [ -f "$FILE" ]; then
+        git diff "$FILE" >> "$TMP_FILE"
+    fi
+done
+
+if [ -f "$TMP_FILE" ]; then
+    cat "$TMP_FILE" | gitx
+    rm "$TMP_FILE"
+fi
