@@ -1,0 +1,1 @@
+git branch|grep thomas|sed 's/\*//'|xargs -L1 git push sg
