@@ -1,0 +1,1 @@
+git branch -a|grep sg/thomas|sed 's!remotes/sg/!sg :!'|xargs -p -L1 git push
