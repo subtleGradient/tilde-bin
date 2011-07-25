@@ -1,0 +1,1 @@
+git for-each-ref --format='%(refname:short)' "$(git symbolic-ref "${1:-HEAD}")"
