@@ -12,7 +12,7 @@
 var fs = require('fs')
 var ROOT = fs.realpathSync(process.env.EXT_SDK_ROOT)
 var CLASS = process.argv[2]// || 'Ext.util.Observable'
-var manifest, PROJECT
+var manifest = process.argv[3], PROJECT
 
 if (!ROOT) {
     console.error('You must define the environment variable EXT_SDK_ROOT as the root path of your Ext SDK')
@@ -43,18 +43,25 @@ var results = {
 }
 
 try{
-    manifest = JSON.parse(fs.readFileSync(ROOT + '/touch/build/manifest.json'))
+    PROJECT = manifest.match('platform|extjs|touch')[0]
+    manifest = JSON.parse(fs.readFileSync(manifest))
+}catch(e){try{
+    manifest = JSON.parse(fs.readFileSync(ROOT + '/touch/build/touch-manifest.json'))
     PROJECT = 'touch'
 }catch(e){try{
-    manifest = JSON.parse(fs.readFileSync(ROOT + '/extjs/build/manifest.json'))
+    manifest = JSON.parse(fs.readFileSync(ROOT + '/extjs/build/extjs-manifest.json'))
+    PROJECT = 'extjs'
+}catch(e){try{
+    manifest = JSON.parse(fs.readFileSync(ROOT + '/extjs/build/Ext4-manifest.json'))
     PROJECT = 'extjs'
 }catch(e){
-}}
+}}}}
 
 if (!manifest) {
     console.error('You need to build your manifest.json file')
     process.exit(1)
 }
+console.error(PROJECT)
 
 manifest.forEach(function(classManifest){
     if (classManifest.className == CLASS) {
