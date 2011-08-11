@@ -1,0 +1,9 @@
+set completion-ignore-case on
+set meta-flag on
+set input-meta on
+set output-meta on
+set convert-meta off
+
+"\t": menu-complete
+"\e[A": history-search-backward
+"\e[B": history-search-forward
