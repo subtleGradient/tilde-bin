@@ -12,7 +12,7 @@ if [ ! -d "$TARGET_PATH" ]; then
     exit 1
 fi
 
-       USER=$(echo "$HOME"|sed "s!^$(dirname $HOME)!!")
+       USER=$(whoami)
   LINK_NAME=$(echo "$TARGET_PATH"|sed "s!^$HOME!!"|sed 's!^/!!'|sed 's!/!:!g')
 TARGET_PATH=$(echo "$TARGET_PATH"|sed "s!^$HOME!../!")
 
