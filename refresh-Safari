@@ -1,5 +1,8 @@
 #!/usr/bin/env osascript
-tell the application ¬
-	"Safari" to tell every document ¬
-	of the first window ¬
-	to set URL to (get URL)
+tell the application¬
+    "Safari"¬
+        to tell every document¬
+            of the first window
+    set URL to (get URL)
+    get URL
+end tell

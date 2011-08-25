@@ -1,8 +1,8 @@
 #!/usr/bin/env osascript
-tell the app "Google Chrome Dev"¬
-    to tell the active tab¬
-    of the first window¬
-    to execute javascript¬
-    "location.reload()"
-
-get "Reloading"
+tell the application¬
+    "Google Chrome Dev"¬
+        to tell the first window¬
+            to tell the active tab
+    set URL to (get URL)
+    get URL
+end tell
