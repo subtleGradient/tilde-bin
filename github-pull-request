@@ -1,6 +1,5 @@
 TO="$(git-upstream-ref|sed 's!^[^/]*/!!')"
 FROM="$(git-refname)"
-GITHUB_USER="$(git config github.user)"
-PROJECT_NAME="$(git config remote.origin.url|sed -E 's!^([^/]*/)+!!'|sed 's!\.git$!!')"
+GITHUB_USER_PROJECT="$(git config remote.origin.url|sed -E 's!^([^/]*/){3}!!'|sed 's!\.git$!!')"
 
-open "https://github.com/${GITHUB_USER}/${PROJECT_NAME}/pull/new/${TO}...${FROM}"
+open "https://github.com/${GITHUB_USER_PROJECT}/pull/new/${TO}...${FROM}"
