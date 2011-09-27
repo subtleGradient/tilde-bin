@@ -1,0 +1,2 @@
+SEARCH="EXTJSIV"
+git log --grep="$SEARCH" $* |grep "$SEARCH"|sed -E 's|^.*('"$SEARCH"'[-_\s][0-9]*).*$|https://sencha.jira.com/browse/\1|g'|sort|uniq
