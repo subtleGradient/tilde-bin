@@ -1,0 +1,18 @@
+echo -n "$1" | pbcopy -pboard find
+
+pushd "$(git rev-parse --show-toplevel)" &>/dev/null &
+
+git grep --line-number --fixed-strings "$1"\
+    --\
+        extjs/src \
+        platform/core/src \
+        platform/src \
+        extjs/test \
+        platform/core/test \
+        platform/test \
+    \
+    | grep -v 'Binary file'\
+    | sed -E "s!^!$PWD/!"\
+    | sed -E 's!(^[^:]+):([0-9]+):.*$!txmt://open?url=file://\1\&line=\2!'
+
+popd &>/dev/null &
