@@ -1,0 +1,9 @@
+#!/usr/bin/env bash
+
+GITHUB_USER_PROJECT="$(git config remote.origin.url|cut -d: -f2|cut -d. -f1)"
+UPSTREAM=$(git-upstream-ref)
+HASH=$(git log -1 --pretty=format:%H "${1:-HEAD}")
+
+PULL=$(git log -1 $(git-what-branch --reference $UPSTREAM $HASH |head -2|tail -1|cut -d' ' -f5)|grep 'pull request #'|cut -d'#' -f2|cut -d' ' -f1)
+
+echo "https://github.com/$GITHUB_USER_PROJECT/pull/$PULL"
