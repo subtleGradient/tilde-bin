@@ -1,13 +1,15 @@
-# TO="$(git-upstream-ref|sed 's!^[^/]*/!!')"
-# FROM="$(git-refname)"
-# GITHUB_USER="$(git config github.user)"
-GITHUB_USER_PROJECT="$(git config remote.origin.url|sed -E 's!^([^/]*/){3}!!'|sed -E 's!^([^:]*:)!!'|sed 's!\.git$!!')"
-# 
-# open "https://github.com/${GITHUB_USER_PROJECT}/commit/${TO}...${GITHUB_USER}:${FROM}"
+#!/usr/bin/env bash
 
-# https://github.com/extjs/SDK/commit/
+GITHUB_USER_PROJECT="$(git config remote.origin.url|cut -d: -f2|cut -d. -f1)"
+UPSTREAM=$(git-upstream-ref)
+HASH=${1:-HEAD}
+PULL=$(git-trace-pull-request $HASH)
 
-git log -1 "${1:-HEAD}" --name-status --date=rfc --pretty=format:"{quote}
+
+echo -n '{quote}'
+
+git log -1 "$HASH" --name-status --date=rfc --pretty=format:"
+[Pull request #$(echo $PULL|cut -d/ -f7)|$PULL]
 [%h|https://github.com/${GITHUB_USER_PROJECT}/commit/%H]
 %an <%ae>
 %cr (%ad)
