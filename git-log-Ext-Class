@@ -1,0 +1,26 @@
+#!/usr/bin/env bash
+
+TO=${1:-$(git symbolic-ref HEAD)}
+FROM=${2:-$(git for-each-ref --format='%(upstream:short)' "$TO")}
+
+if [[ $FROM == "" ]]; then
+    echo "Cannot find upstream for $TO" 1>&2
+    exit 1
+fi
+
+if [[ $FROM == --since=* ]]; then
+    FROM=$(echo $FROM|sed 's/--since=//')
+    FROM=$(eval "git log --pretty=format:%H $TO --since='$FROM'"|tail -1)
+    
+    if [[ $FROM == "" ]]; then
+        echo "Cannot find any commits for $2" 1>&2
+        exit 1
+    fi
+fi
+
+git log --name-only --pretty=format: $FROM..$TO \
+    |grep '.js$' \
+    |sort|uniq \
+    |xargs -n1 git grep -I '^\s*Ext\.define(["'"'"']' "$TO" --  \
+    |sed -e 's/"/'"'"'/g' -e 's/Ext.define('"'"'//' -e "s/'.*//" \
+    |sort|uniq
