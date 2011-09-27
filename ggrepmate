@@ -1,0 +1,6 @@
+echo -n "$1" | pbcopy -pboard find
+
+git grep --line-number --fixed-strings "$1" \
+    |grep -v 'Binary file'\
+    |sed -E "s!^!$PWD/!"\
+    |sed -E 's!(^[^:]+):([0-9]+):.*$!txmt://open?url=file://\1\&line=\2!'
