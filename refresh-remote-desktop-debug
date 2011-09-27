@@ -1,0 +1,14 @@
+#!/usr/bin/env osascript
+-- Created by Thomas Aylott - http://subtleGradient.com
+-- Enjoy
+
+activate application "Remote Desktop Connection"
+
+tell application "System Events" to tell process "RDC"
+    delay 1/16
+    key code 36 -- return key
+    delay 1/16
+    key code 96 -- F5 key
+    delay 1/16
+    key code 48 using command down -- command tab
+end

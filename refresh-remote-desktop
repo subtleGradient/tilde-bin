@@ -1,0 +1,6 @@
+#!/usr/bin/env osascript
+-- Created by Thomas Aylott - http://subtleGradient.com
+-- Enjoy
+
+activate application "Remote Desktop Connection"
+tell application "System Events" to tell process "RDC" to key code 96 -- F5 key
