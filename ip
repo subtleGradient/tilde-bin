@@ -1,0 +1,1 @@
+ifconfig ${1:-en1} |grep 'inet '|cut -d ' ' -f 2
