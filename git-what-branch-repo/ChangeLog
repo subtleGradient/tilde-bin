@@ -1,0 +1,34 @@
+2010-10-28  Seth Robertson  <seth@startide.baka.org>
+
+	* v0.2.4 release
+
+	* git-what-branch: Add --first-parent and --first-parent-simple options
+	to allow more easy programmatic detection of failure if a commit was
+	not made directly on any named branch and programmatic parse of output.
+
+	* Exit with errors if things go wrong or at least not as the user
+	probably desired (e.g. commit has not merged with a named branch, etc)
+
+	* Bugfix: Prevent duplicate refs from being researched multiple times.
+	Prevent first-parent outputs from being discussed again during
+	merge-path output if --all is used.
+
+	* Bugfix: If multiple commits are listed for research, do not have subsequent
+	commits inherit bad or duplicate information from previous commits.
+
+2010-10-12  Seth Robertson  <seth@startide.baka.org>
+
+	* git-what-branch: Handle case when you run git-what-branch when
+	you are not on a branch (no branch).
+
+2010-09-23  Seth Robertson  <seth@startide.baka.org>
+
+	* v0.2.1 release
+	* Make output shorter and better aligned
+	* Massive speedup when many targets need to be searched (Thanks Artur Skawina)
+	* Allow auto-target specification --branches, --allbranches, --tags, --allref
+	* Allow --reference to be comma separated list of target references
+	* Delete outdated --reference-branch documentation
+	* Delete extended help (RTFM)
+	* Use better(?) ref->name conversion
+	* Correct sorting if multiple commits of interest are specified for searching
