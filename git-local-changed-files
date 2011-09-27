@@ -1,0 +1,8 @@
+#!/usr/bin/env bash
+git log \
+    --pretty=format:''\
+    --name-only\
+    $(git for-each-ref --format='%(upstream:short)' $(git symbolic-ref HEAD))..HEAD\
+    | sort|uniq\
+    | grep -E '[^/.]*\..*$'\
+    ;echo -n # get out of (END) mode, whatever it's called. #lolN00b
