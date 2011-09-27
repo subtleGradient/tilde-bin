@@ -26,7 +26,7 @@ function waitFor(testFx, onReady, timeOutMillis) {
                     phantom.exit(1);
                 } else {
                     // Condition fulfilled (timeout and/or condition is 'true')
-                    console.log("'waitFor()' finished in " + (new Date().getTime() - start) + "ms.");
+                    // console.log("'waitFor()' finished in " + (new Date().getTime() - start) + "ms.");
                     typeof(onReady) === "string" ? eval(onReady) : onReady(); //< Do what it's supposed to do once the condition is fulfilled
                     clearInterval(interval); //< Stop this interval
                 }
@@ -54,25 +54,32 @@ page.open(phantom.args[0], function(status){
     } else {
         waitFor(function(){
             return page.evaluate(function(){
-                if (document.body.querySelector('.runner .description')) {
+                if (document.body.querySelector('.statusMessage.failed, .statusMessage.passed')) {
                     return true;
                 }
                 return false;
             });
         }, function(){
             page.evaluate(function(){
-                console.log(document.body.querySelector('.runner .description').innerText);
+                console.log(document.body.querySelector('.statusMessage.failed, .statusMessage.passed').innerText);
                 // console.log(document.documentElement.outerHTML)
                 
-                list = document.body.querySelectorAll('div.jasmine_reporter > div.suite.failed');
-                for (i = 0; i < list.length; ++i) {
-                    el = list[i];
-                    desc = el.querySelectorAll('.description');
-                    console.log('');
-                    for (j = 0; j < desc.length; ++j) {
-                        console.log(desc[j].innerText);
-                    }
-                }
+                Array.prototype.slice.call(document.querySelectorAll('.suite.failed, .spec.failed')).forEach(function(node){
+                    var indent = '';
+                    var index = parseFloat(node.style.paddingLeft) / 6;
+                    while (index-- > 0) indent += ' ';
+                    console.log(node.innerText.replace(/^/gm, indent));
+                })
+                
+                // list = document.body.querySelectorAll('div.jasmine_reporter > div.suite.failed');
+                // for (i = 0; i < list.length; ++i) {
+                //     el = list[i];
+                //     desc = el.querySelectorAll('.description');
+                //     console.log('');
+                //     for (j = 0; j < desc.length; ++j) {
+                //         console.log(desc[j].innerText);
+                //     }
+                // }
             });
             
             phantom.exit();
