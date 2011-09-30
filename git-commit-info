@@ -9,8 +9,8 @@ PULL=$(git-trace-pull-request $HASH)
 echo -n '{quote}'
 
 git log -1 "$HASH" --name-status --date=rfc --pretty=format:"
-[Pull request #$(echo $PULL|cut -d/ -f7)|$PULL]
-[%h|https://github.com/${GITHUB_USER_PROJECT}/commit/%H]
+[Pull request $(echo $PULL|cut -d/ -f7) |$PULL]
+[Commit %h |https://github.com/${GITHUB_USER_PROJECT}/commit/%H]
 %an <%ae>
 %cr (%ad)
 
