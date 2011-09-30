@@ -1,0 +1,32 @@
+#!/usr/bin/env bash
+if [[ $1 == "" ]]; then
+    echo "Usage: $0 http://url/to/something"
+    exit 1
+fi
+
+RESULT=$(open.phantom.js "$1")
+
+echo $RESULT
+
+if [[ $RESULT == *FAIL* ]]; then
+    echo FAIL
+    git bisect bad
+    exit 0
+
+elif [[ $RESULT == *PASS* ]]; then
+    echo PASS
+
+    if [[ $RESULT == *Error* ]]; then
+        echo ERROR
+        git bisect skip
+        exit 1
+    fi
+
+    git bisect good
+    exit 0
+
+elif [[ $RESULT == *Error* ]]; then
+    echo ERROR
+    git bisect skip
+    exit 1
+fi
