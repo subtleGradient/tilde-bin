@@ -1,0 +1,18 @@
+#!/usr/bin/env bash
+# Author: Thomas Aylott <thomas@subtlegradient.com>
+# Notes:|
+#   This expects you to use branch names like "thomas/HUE-123-Make-Things-Awesomer" or "tom-HUE-321-code-stuff"
+
+BRANCH_NAME="$(git symbolic-ref HEAD|sed 's/refs\/heads\///')"
+TICKET_ID="$(echo "$BRANCH_NAME"|sed -E 's/^.*[/-]([A-Z]+-[0-9]+).*$/\1/')"
+
+if [[ $1 == "" ]]; then
+    cat <<-EOF
+        Usage:
+          $0 getIssue
+          $0 getComments
+EOF
+    exit 1
+fi
+
+jira --issue "$TICKET_ID" --action "$@"

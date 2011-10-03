@@ -1,0 +1,6 @@
+#!/usr/bin/env bash
+
+BRANCH_NAME="$(git symbolic-ref HEAD|sed 's/refs\/heads\///')"
+TICKET_ID="$(echo "$BRANCH_NAME"|sed -E 's/^.*[/-]([A-Z]+-[0-9]+).*$/\1/')"
+
+open "$(git config jira.server)browse/$TICKET_ID"
