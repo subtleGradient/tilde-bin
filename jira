@@ -13,4 +13,22 @@ if [[ ! -f $JAR ]]; then
     exit 1
 fi
 
-java -jar "$JAR" --server "$(git config jira.server)" --user "$(git config jira.user)" --password "$(git config jira.password)" $@
+SERVER="$(git config jira.server)"
+
+if [[ $SERVER == "" ]]; then
+    cat <<-EOF
+    How to setup your git repo's Jira config without leaking your password all over the place.
+
+        cd ~/Projects/MyProjectOfDoom
+        git config jira.server https://whatever.jira.com/ # Use your actual url
+        git config jira.user $USER                        # Use your actual Jira username
+        git config jira.password PLACEHOLDER              # Do NOT use your actual password yet
+        chmod 600 .git/config
+        $EDITOR .git/config
+
+    Now replace PLACEHOLDER with your actual password.
+EOF
+    exit 1
+fi
+
+java -jar "$JAR" --server "$SERVER" --user "$(git config jira.user)" --password "$(git config jira.password)" $@
