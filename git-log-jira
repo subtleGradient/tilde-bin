@@ -1,4 +1,4 @@
 #!/usr/bin/env bash
 # Use this as a replacement for `git log`, it should work exactly the same, except spit out Jira urls instead of log messages
 SEARCH="EXTJSIV"
-git log --grep="$SEARCH" $* |grep "$SEARCH"|sed -E 's|^.*('"$SEARCH"'[-_\s][0-9]*).*$|https://sencha.jira.com/browse/\1|g'|sort|uniq
+git log --grep="$SEARCH" $@ |grep "$SEARCH"|sed -E 's|^.*('"$SEARCH"'[-_\s][0-9]*).*$|https://sencha.jira.com/browse/\1|g'|sort|uniq
