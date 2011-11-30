@@ -5,4 +5,5 @@
 #   git-log-jira TOUCH origin/touch-2.0.0 --since="last monday"
 
 SEARCH="$1";shift
-git log --grep="$SEARCH" "$@" |grep "$SEARCH"|sed -E 's|^.*('"$SEARCH"'[-_\s][0-9]*).*$|https://sencha.jira.com/browse/\1|g'|sort|uniq
+echo "<!doctype html><meta charset=utf-8><title>$SEARCH — `date`</title>"
+git log --grep="$SEARCH" "$@" |grep "$SEARCH"|sed -E 's|^.*('"$SEARCH"'[-_\s][0-9]*).*$|<br><a href=https://sencha.jira.com/browse/\1>\1</a>|g'|sort|uniq
