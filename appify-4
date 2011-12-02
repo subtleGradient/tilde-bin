@@ -17,6 +17,7 @@ if [ ! "$1" -o "$1" = "-h" -o "$1" = "--help" ]; then cat <<EOF
     Once your app is created, $Appify will tell you the path to your Info.plist.
     You should customize the Bundle Identifier and Get Info String at least.
     
+    MIT License
     Copyright © 2010-2011 Thomas Aylott <http://subtlegradient.com>
     Copyright © 2011 Mathias Bynens <http://mathiasbynens.be>
     Copyright © 2011 Sencha Labs Foundation
