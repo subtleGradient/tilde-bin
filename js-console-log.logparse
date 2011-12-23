@@ -10,11 +10,16 @@
 # match line starting with 'error ', case-insensitive
 error /Error:/
 error /^\[ERROR\]/
+error /^\[FAIL\]/
 
 # list of warnings here...
 warning /[Ww]arning/
 warning /WARNING/
 warning /\[WARN\]/
+
+# PASS
+ok /\[PASS\]/
+ok /\bSuccess\b/
 
 # create a quick access link to lines in the report containing 'INFO'
 info /\[INFO\]/
