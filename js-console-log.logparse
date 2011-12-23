@@ -1,0 +1,25 @@
+# ok/error/warn
+# Used to identify problem lines.
+# info
+# These lines are highlighted blue in the report. They are used to create a set of links into the report for quick access to certain sections.
+# start
+# Like info lines, they are highlighted blue in the report, and appear in the set of quick access links to the report. In addition, they are used for grouping the list of errors and warnings found in that section.
+
+# ok /not really/
+
+# match line starting with 'error ', case-insensitive
+error /Error:/
+error /^\[ERROR\]/
+
+# list of warnings here...
+warning /[Ww]arning/
+warning /WARNING/
+warning /\[WARN\]/
+
+# create a quick access link to lines in the report containing 'INFO'
+info /\[INFO\]/
+info /\[DEBUG\]/
+
+# each line containing 'BUILD' represents the start of a section for grouping errors and warnings found after the line.
+# also creates a quick access link.
+start /\[START\]/
