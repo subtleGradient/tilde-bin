@@ -9,8 +9,8 @@
 
 # match line starting with 'error ', case-insensitive
 error /Error:/
-error /^\[ERROR\]/
-error /^\[FAIL\]/
+error /\[ERROR\]/
+error /\[FAIL\]/
 
 # list of warnings here...
 warning /[Ww]arning/
