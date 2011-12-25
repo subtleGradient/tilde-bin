@@ -1,9 +1,10 @@
 #!/usr/bin/env phantomjs
-/*jshint asi:true, laxbreak:true*/
-/*
-    @author Thomas Aylott <thomas.aylott@sencha.com>
-    @copyright 2011 Sencha Labs Foundation
-*/
+/*jshint asi:true, nodejs:true, laxbreak:true*//*!
+
+Created by Thomas Aylott <thomas@subtlegradient.com>
+Copyright © 2011 Sencha Labs Foundation
+
+!*/
 
 var logTypes = "log warn info error debug".toUpperCase().split(' ')
 
@@ -16,7 +17,16 @@ for (var i = logTypes.length; --i >= 0;){
 }())
 
 
-var LOG_LEVEL = 1, TIMEOUT = 1e3, EXITON = /^DONE!$/
+var LOG_LEVEL = 1,
+    TIMEOUT = 1e3,
+    EXITON = /^DONE!$/,
+    SELECT = null,
+    URL
+
+setTimeout(function(){
+    error('Timed out');
+    phantom.exit();
+}, 5 * 60e3); // abort if hung
 
 setTimeout(function(){
     
@@ -35,6 +45,7 @@ function runPage(config){
     if (config.debug) LOG_LEVEL = 4
     if (config.timeout) TIMEOUT = Number(config.timeout)
     if (config.exiton) EXITON = RegExp(config.exiton)
+    if (config.select) SELECT = config.select
     
     var exitEventuallyTimer
     function ping(){
@@ -52,22 +63,39 @@ function runPage(config){
         onJSReady.fired = true
         debug('onJSReady')
         
+        URL = config.url
+        
         page.evaluate(function(){
             
             console._log = console.log
             
-            console.log = function(){
-                var data = {type:'LOG', data:arg(arguments)}
+            function getStack(){
+                var stack
                 if (typeof Ext == 'object' && Ext.getDisplayName) {
-                    data.stack = []
-                    var caller = arguments.callee
-                    while (data.stack.length < 10 && caller && (caller = caller.caller)){
-                        data.stack.unshift(Ext.getDisplayName(caller))
-                        if (/(?:fireEvent|continueFireEvent)$/.test(data.stack[0])) data.stack.splice(1,0, Array.prototype.slice.call(caller.arguments)[0])
-                        if (/^(?:layout|fireEvent|continueFireEvent)$/.test(data.stack[0].split('#')[1])) break
+                    stack = []
+                    var caller = arguments.callee.caller.caller, args
+                    while (stack.length < 10 && caller && (caller = caller.caller)){
+                        stack.unshift(Ext.getDisplayName(caller))
+                        args = Array.prototype.slice.call(caller.arguments)
+                        
+                        for (var i=0; i < args.length; i++) {
+                            try {
+                                JSON.stringify(args[i])
+                            } catch(e){
+                                args[i] = '<circular>'
+                            }
+                        }
+                        stack.splice(1,0, args)
+                        
+                        // if (/(?:fireEvent|continueFireEvent)$/.test(stack[0])) stack.splice(1,0, Array.prototype.slice.call(caller.arguments)[0])
+                        // if (/^Anonymous$/i.test(stack[0])) {
+                        //     stack[0] = caller.toString().replace(/\s+/g,' ')
+                        // }
+                        
+                        if (/^(?:layout|fireEvent|continueFireEvent)$/.test(stack[0].split('#')[1])) break
                     }
-                    data.stack.reverse()
-                    // data.stack = [
+                    // stack.reverse()
+                    // stack = [
                     //     arguments.callee.caller.$owner && arguments.callee.caller.$owner.$className
                     //     // ,Ext.getDisplayName(arguments.callee.caller.caller.caller.caller)
                     //     ,Ext.getDisplayName(arguments.callee.caller.caller.caller)
@@ -75,13 +103,17 @@ function runPage(config){
                     //     ,Ext.getDisplayName(arguments.callee.caller)
                     // ]
                 }
-                log(data)
+                return stack
+            }
+            
+            console.log = function(){
+                log({type:'LOG', data:arg(arguments), stack:getStack()})
             }
             console.warn = function(){
-                log({type:'WARN', data:arg(arguments)})
+                log({type:'WARN', data:arg(arguments), stack:getStack()})
             }
             console.error = function(){
-                log({type:'ERROR', data:arg(arguments)})
+                log({type:'ERROR', data:arg(arguments), stack:getStack()})
             }
             
             function arg(args){
@@ -100,6 +132,8 @@ function runPage(config){
             
         })
         
+        // if (SELECT) page.evaluate(Function("watchSelector"))
+        
     }
     
     function exit(){
@@ -107,6 +141,7 @@ function runPage(config){
             return;
         }
         debug('exit')
+        debug(page.evaluate(Function("return document.documentElement.outerHTML")))
         phantom.exit()
     }
     
@@ -158,7 +193,7 @@ function log(msg, line, file){
     if (logTypes[msg.type] && 'data' in msg && Object.keys(msg).length == 2) msg = msg.data
     
     if (typeof msg != 'string') msg = JSON.stringify(msg)
-    if (line && file) msg += ' — '+ file +':'+ line
+    if (line && file) msg = (+new Date) + ' ' + msg + ' — '+ file +':'+ line + ' — ' + URL
     
     console.log(msg)
 }
@@ -178,10 +213,6 @@ function error(msg){
 ////////////////////////////////////////////////////////////////////////////////
 
 function ArgOptions(args){
-    /**
-     * @author Thomas Aylott <thomas@subtlegradient.com> 
-     * @copyright 2011 Sencha, Inc.
-     */
     args = args.slice(0) // clone, for safety
     var argo = []
     var isArg = /^--?(no-)?(?=\w)(.*)$/i
