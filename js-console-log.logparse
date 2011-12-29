@@ -11,6 +11,7 @@
 error /Error:/
 error /\[ERROR\]/
 error /\[FAIL\]/
+error /\bfault:/
 
 # list of warnings here...
 warning /[Ww]arning/
